@@ -25,7 +25,7 @@ class HDBSCANExtractor(ColorExtractorBase):
         from sklearn.cluster import HDBSCAN
 
         arr = np.squeeze(arr)
-        model = HDBSCAN(min_cluster_size=int(len(arr) / 10), allow_single_cluster=True) # no cluster with less than 10% of points
+        model = HDBSCAN(min_cluster_size=int(len(arr) / 10), allow_single_cluster=True, copy = True) # no cluster with less than 10% of points
         labels = model.fit_predict(arr)
         unique_labels, counts = np.unique(labels, return_counts=True)
         label_freq = counts / counts.sum()
