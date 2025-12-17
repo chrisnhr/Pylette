@@ -42,6 +42,10 @@ class HDBSCANExtractor(ColorExtractorBase):
             centroid = np.mean(cluster_points, axis=0).astype(int)
             colors.append(Color(centroid, freq))
 
+        if not colors:
+            raise ValueError(
+                "HDBSCAN failed to find any clusters - all points were classified as noise. ")
+
         colors.sort(key=lambda c: c.freq, reverse=True)
         return colors[:palette_size]
 
