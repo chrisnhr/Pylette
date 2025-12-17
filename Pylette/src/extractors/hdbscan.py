@@ -27,7 +27,7 @@ class HDBSCANExtractor(ColorExtractorBase):
 
         arr = np.squeeze(arr)
         # Set default parameters, allow overrides via kwargs
-        hdbscan_params = {"min_cluster_size": int(len(arr) / 10), "allow_single_cluster": True, "copy": True}
+        hdbscan_params = {"min_cluster_size": int(len(arr) / 20), "allow_single_cluster": True, "copy": True}
         hdbscan_params.update(kwargs)
         model = HDBSCAN(**hdbscan_params)
         labels = model.fit_predict(arr)
