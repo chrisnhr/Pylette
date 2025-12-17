@@ -9,6 +9,7 @@ from typing import Callable, Literal, Sequence
 import numpy as np
 from PIL import Image
 
+from Pylette.src.extractors.hdbscan import hdbscan_extraction
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.extractors.hdbscan import hdbscan_extraction
