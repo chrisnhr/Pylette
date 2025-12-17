@@ -25,8 +25,8 @@ class HDBSCANExtractor(ColorExtractorBase):
         from sklearn.cluster import HDBSCAN
 
         arr = np.squeeze(arr)
-        clusterer = HDBSCAN(min_cluster_size=int(len(arr) / 10), allow_single_cluster=True) # no cluster with less than 10% of points
-        labels = clusterer.fit_predict(arr)
+        model = HDBSCAN(min_cluster_size=int(len(arr) / 10), allow_single_cluster=True) # no cluster with less than 10% of points
+        labels = model.fit_predict(arr)
         unique_labels, counts = np.unique(labels, return_counts=True)
         label_freq = counts / counts.sum()
 
@@ -38,7 +38,7 @@ class HDBSCANExtractor(ColorExtractorBase):
             centroid = np.mean(cluster_points, axis=0).astype(int)
             colors.append(Color(centroid, freq))
 
-        colors.sort(key=lambda c: c.frequency, reverse=True)
+        colors.sort(key=lambda c: c.freq, reverse=True)
         return colors[:palette_size]
 
 def hdbscan_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
