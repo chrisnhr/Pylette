@@ -40,3 +40,18 @@ class HDBSCANExtractor(ColorExtractorBase):
 
         colors.sort(key=lambda c: c.frequency, reverse=True)
         return colors[:palette_size]
+
+def hedbscan_extractor(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    """
+    Extracts a color palette using HDBSCAN.
+
+    Parameters:
+        arr (NDArray[float]): The input array.
+        height (int): The height of the image.
+        width (int): The width of the image.
+        palette_size (int): The number of colors to extract from the image.
+
+    Returns:
+        list[Color]: A palette of colors sorted by frequency.
+    """
+    return HDBSCANExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size)
