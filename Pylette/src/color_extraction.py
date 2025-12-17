@@ -211,7 +211,7 @@ def extract_colors(
         case ExtractionMethod.MC:
             colors = median_cut_extraction(valid_pixels, height, width, palette_size)
         case ExtractionMethod.HDBSCAN:
-            colors = hdbscan_extraction(valid_pixels, height, width)
+            colors = hdbscan_extraction(valid_pixels, height, width, palette_size)
     if colors:
         if sort_mode == "luminance":
             colors.sort(key=lambda c: c.luminance, reverse=False)
