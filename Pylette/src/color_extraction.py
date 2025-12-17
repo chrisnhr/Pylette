@@ -11,6 +11,7 @@ from PIL import Image
 
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
+from Pylette.src.extractors.hdbscan import hdbscan_extraction
 from Pylette.src.palette import Palette
 from Pylette.src.types import (
     BatchResult,
@@ -209,7 +210,8 @@ def extract_colors(
             colors = k_means_extraction(valid_pixels, height, width, palette_size)
         case ExtractionMethod.MC:
             colors = median_cut_extraction(valid_pixels, height, width, palette_size)
-
+        case ExtractionMethod.HDBSCAN:
+            colors = hdbscan_extraction(valid_pixels, height, width)
     if colors:
         if sort_mode == "luminance":
             colors.sort(key=lambda c: c.luminance, reverse=False)
@@ -223,7 +225,7 @@ def extract_colors(
         image_source=_get_descriptive_image_source(image, img_obj),
         source_type=source_type,
         extraction_params=ExtractionParams(
-            palette_size=palette_size,
+            palette_size=palette_size, #calculate the actual palette size used also for HDBSCAN
             mode=mode,
             sort_mode=sort_mode,
             resize=resize,

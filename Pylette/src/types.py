@@ -56,6 +56,7 @@ ColorTuple: TypeAlias = RGBTuple | RGBATuple
 class ExtractionMethod(str, Enum):
     MC = "MedianCut"
     KM = "KMeans"
+    HDBSCAN = "HDBSCAN"
 
 
 class ColorSpace(str, Enum):
