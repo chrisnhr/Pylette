@@ -12,7 +12,6 @@ from PIL import Image
 from Pylette.src.extractors.hdbscan import hdbscan_extraction
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
-from Pylette.src.extractors.hdbscan import hdbscan_extraction
 from Pylette.src.palette import Palette
 from Pylette.src.types import (
     BatchResult,
@@ -96,12 +95,14 @@ def batch_extract_colors(
     alpha_mask_threshold: int | None = None,
     max_workers: int | None = None,
     progress_callback: Callable[[int, BatchResult], None] | None = None,
+    **kwargs,
 ) -> list[BatchResult]:
     """Extract colors from multiple images in parallel.
 
     Args:
         progress_callback: Optional callback function called when each task completes.
                          Receives (task_number, result) as arguments.
+        **kwargs: Additional keyword arguments to pass to the clustering model.
     """
 
     def thread_fn(image: ImageInput):
@@ -112,6 +113,7 @@ def batch_extract_colors(
             mode=mode,
             sort_mode=sort_mode,
             alpha_mask_threshold=alpha_mask_threshold,
+            **kwargs,
         )
 
     results: list[BatchResult] = []
@@ -147,6 +149,7 @@ def extract_colors(
     mode: ExtractionMethod = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
+    **kwargs,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -208,11 +211,11 @@ def extract_colors(
     # Color extraction
     match mode:
         case ExtractionMethod.KM:
-            colors = k_means_extraction(valid_pixels, height, width, palette_size)
+            colors = k_means_extraction(valid_pixels, height, width, palette_size, **kwargs)
         case ExtractionMethod.MC:
-            colors = median_cut_extraction(valid_pixels, height, width, palette_size)
+            colors = median_cut_extraction(valid_pixels, height, width, palette_size, **kwargs)
         case ExtractionMethod.HDBSCAN:
-            colors = hdbscan_extraction(valid_pixels, height, width, palette_size)
+            colors = hdbscan_extraction(valid_pixels, height, width, palette_size, **kwargs)
     if colors:
         if sort_mode == "luminance":
             colors.sort(key=lambda c: c.luminance, reverse=False)

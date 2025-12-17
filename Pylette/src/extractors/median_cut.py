@@ -123,7 +123,7 @@ class ColorBox:
 
 class MedianCutExtractor(ColorExtractorBase):
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
         """
         Extracts a color palette using the median cut algorithm.
 
@@ -132,6 +132,7 @@ class MedianCutExtractor(ColorExtractorBase):
             height (int): The height of the image.
             width (int): The width of the image.
             palette_size (int): The number of colors to extract from the image.
+            **kwargs: Additional keyword arguments (unused for median cut, kept for consistency).
 
         Returns:
             list[Color]: A list of colors extracted from the image.
@@ -146,7 +147,7 @@ class MedianCutExtractor(ColorExtractorBase):
         return [Color(tuple(map(int, box.average)), box.pixel_count / valid_pixel_count) for box in boxes]
 
 
-def median_cut_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+def median_cut_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
 
@@ -155,9 +156,10 @@ def median_cut_extraction(arr: NDArray[NP_T], height: int, width: int, palette_s
         height (int): The height of the image.
         width (int): The width of the image.
         palette_size (int): The number of colors to extract from the image.
+        **kwargs: Additional keyword arguments (unused for median cut, kept for consistency).
 
     Returns:
         list[Color]: A list of colors extracted from the image.
     """
 
-    return MedianCutExtractor().extract(arr, height, width, palette_size)
+    return MedianCutExtractor().extract(arr, height, width, palette_size, **kwargs)

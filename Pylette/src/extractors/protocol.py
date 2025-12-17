@@ -10,12 +10,12 @@ NP_T = TypeVar("NP_T", bound=np.generic, covariant=True)
 
 
 class ColorExtractor(Protocol):
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]: ...
+    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]: ...
 
 
 class ColorExtractorBase(ABC):
     @abstractmethod
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
         pass
 
     def _reshape_array(self, arr: NDArray[NP_T], height: int, width: int) -> NDArray[NP_T]:

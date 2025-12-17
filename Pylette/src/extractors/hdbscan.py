@@ -8,7 +8,7 @@ from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
 
 class HDBSCANExtractor(ColorExtractorBase):
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
         """
         Extracts a color palette using HDBSCAN.
 
@@ -17,6 +17,7 @@ class HDBSCANExtractor(ColorExtractorBase):
             height (int): The height of the image.
             width (int): The width of the image.
             palette_size (int): The number of colors to extract from the image.
+            **kwargs: Additional keyword arguments to pass to HDBSCAN model.
 
         Returns:
             list[Color]: A palette of colors sorted by frequency.
@@ -25,7 +26,10 @@ class HDBSCANExtractor(ColorExtractorBase):
         from sklearn.cluster import HDBSCAN
 
         arr = np.squeeze(arr)
-        model = HDBSCAN(min_cluster_size=int(len(arr) / 10), allow_single_cluster=True, copy = True) # no cluster with less than 10% of points
+        # Set default parameters, allow overrides via kwargs
+        hdbscan_params = {"min_cluster_size": int(len(arr) / 10), "allow_single_cluster": True, "copy": True}
+        hdbscan_params.update(kwargs)
+        model = HDBSCAN(**hdbscan_params)
         labels = model.fit_predict(arr)
         unique_labels, counts = np.unique(labels, return_counts=True)
         label_freq = counts / counts.sum()
@@ -41,7 +45,7 @@ class HDBSCANExtractor(ColorExtractorBase):
         colors.sort(key=lambda c: c.freq, reverse=True)
         return colors[:palette_size]
 
-def hdbscan_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+def hdbscan_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
     """
     Extracts a color palette using HDBSCAN.
 
@@ -50,8 +54,9 @@ def hdbscan_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size
         height (int): The height of the image.
         width (int): The width of the image.
         palette_size (int): The number of colors to extract from the image.
+        **kwargs: Additional keyword arguments to pass to HDBSCAN model.
 
     Returns:
         list[Color]: A palette of colors sorted by frequency.
     """
-    return HDBSCANExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size)
+    return HDBSCANExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size, **kwargs)

@@ -8,7 +8,7 @@ from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
 
 class KMeansExtractor(ColorExtractorBase):
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
         """
         Extracts a color palette using KMeans.
 
@@ -17,6 +17,7 @@ class KMeansExtractor(ColorExtractorBase):
             height (int): The height of the image.
             width (int): The width of the image.
             palette_size (int): The number of colors to extract from the image.
+            **kwargs: Additional keyword arguments to pass to KMeans model.
 
         Returns:
             list[Color]: A palette of colors sorted by frequency.
@@ -25,7 +26,10 @@ class KMeansExtractor(ColorExtractorBase):
         from sklearn.cluster import KMeans
 
         arr = np.squeeze(arr)
-        model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
+        # Set default parameters, allow overrides via kwargs
+        kmeans_params = {"n_clusters": palette_size, "n_init": "auto", "init": "k-means++", "random_state": 2024}
+        kmeans_params.update(kwargs)
+        model = KMeans(**kmeans_params)
         labels = model.fit_predict(arr)
         palette = np.array(model.cluster_centers_, dtype=int)
         color_count = np.bincount(labels)
@@ -36,7 +40,7 @@ class KMeansExtractor(ColorExtractorBase):
         return colors
 
 
-def k_means_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+def k_means_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int, **kwargs) -> list[Color]:
     """
     Extracts a color palette using KMeans.
 
@@ -45,8 +49,9 @@ def k_means_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size
         height (int): The height of the image.
         width (int): The width of the image.
         palette_size (int): The number of colors to extract from the image.
+        **kwargs: Additional keyword arguments to pass to KMeans model.
 
     Returns:
         list[Color]: A palette of colors sorted by frequency.
     """
-    return KMeansExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size)
+    return KMeansExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size, **kwargs)
